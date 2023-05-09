@@ -1,7 +1,7 @@
 #%%
 import openai
-
-openai.api_key = #SOME API KEY HERE
+import sys
+openai.api_key = # SOME API KEY HERE
 
 messages = []
 
@@ -37,10 +37,16 @@ def get_information(initial_context, max_message_count=5):
 get_state_context = "Ask me what state I live in. Continue to ask me until I tell you. Once you know what state I live in, reply with a single message containing four pound signs, the state I live in, and then another four pound signs (####[some state]####).)"
 
 state = get_information(get_state_context)
+if (state == ""):
+    print("I could not figure out what state you live in. Please try again.")
+    sys.exit()
 
 get_business_type_context = "I am trying to form a business. I am not sure if I should form an SCorp, an LLC, a nonprofit, etc. Ask me questions one at a time to find out which option is best. Once you know what type of business I should form, reply with a single message containing four pound signs, the type of business I should form, and then another four pound signs (####[some business type]####). For example, if I should form an LLC, reply with ####LLC####."
+
 business_type = get_information(get_business_type_context)
-# %%
+if (business_type == ""):
+    print("I could not figure out what state you live in. Please try again.")
+    sys.exit()
 
 final_query = "Given that I live in " +  state + " what are the steps I should take to form a " + business_type + "?"
 
