@@ -1,0 +1,1 @@
+This is a repo containing the work for AdamGPT, an AI based discord bot that helps users get the documents they need to create their own business.
