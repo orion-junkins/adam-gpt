@@ -1,6 +1,9 @@
 import discord
 from discord.ext import commands
+from dotenv.main import load_dotenv
+import os
 
+load_dotenv()
 intents = discord.Intents.all()
 intents.members = True
 
@@ -17,6 +20,4 @@ async def ask(ctx):
     await ctx.send(f"You said: {response.content}")
 
 
-# Discord Bot Token: MTEwNTYxNzg0ODk3MTMxNzI1OA.GvKmBv.T-DtHsFGhjnwnBGRhzLvDwZiBbtA85DT7y3A1E
-
-client.run("MTEwNTYxNzg0ODk3MTMxNzI1OA.GvKmBv.T-DtHsFGhjnwnBGRhzLvDwZiBbtA85DT7y3A1E")
+client.run(os.environ['DISCORD_API_TOKEN'])
