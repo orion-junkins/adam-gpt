@@ -41,7 +41,7 @@ if 'message_count' not in st.session_state:
     st.session_state['message_count'] = 0
 
 if 'user_data' not in st.session_state:
-    st.session_state['user_data'] = user_data_template.copy()
+    st.session_state['user_data'] = deepcopy(user_data_template)
 
 max_messages = 5
 
