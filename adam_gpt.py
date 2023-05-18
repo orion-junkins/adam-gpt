@@ -22,6 +22,8 @@ def get_information(initial_context, max_message_count=5):
     exit_condition_met = False
 
     # Keep asking questions until we reach the max number of messages
+    
+    # ----- Where in here is the message being put out to console, so I can print it to the user in the disc chat
     while message_count < max_message_count:
         message_count += 1
         completion = openai.ChatCompletion.create(
@@ -37,6 +39,9 @@ def get_information(initial_context, max_message_count=5):
             return completion_text.strip('#')
         else:  
             print(completion_text)
+
+            # ----  user_input = await client.wait_for("message", check=check)
+
             user_input = input("Your input: ")
             messages.append({"role": "user", "content": user_input})
 

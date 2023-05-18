@@ -26,12 +26,16 @@ if 'messages' not in st.session_state:
 if 'past' not in st.session_state:
     st.session_state['past'] = []
 
+if 'input_text' not in st.session_state:
+    st.session_state['input_text'] = ''
 
-def get_text():
-    input_text = st.text_input("","", key="input")
-    return input_text 
 
-user_input = get_text()
+def submit():
+    st.session_state.input_text = st.session_state.widget
+    st.session_state.widget = ''
+
+st.text_input("", "", key='widget', on_change=submit)
+user_input = st.session_state.input_text
 
 if user_input:
     st.session_state.messages.append({"role": "user", "content": user_input})

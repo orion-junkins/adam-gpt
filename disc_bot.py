@@ -10,7 +10,7 @@ intents.members = True
 client = commands.Bot(command_prefix='!', intents=intents)
 
 @client.command()
-async def ask(ctx):
+async def start(ctx):
     await ctx.send("Please input your response.")
 
     def check(msg):
