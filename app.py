@@ -25,6 +25,7 @@ if st.button('Reset'):
     st.session_state['past'] = []
     st.session_state['message_count'] = 0
     st.session_state['user_data'] = deepcopy(user_data_template)
+    st.session_state['input_text'] = ''
 
 if 'generated' not in st.session_state:
     st.session_state['generated'] = []
