@@ -25,6 +25,7 @@ if st.button('Reset'):
     st.session_state['message_count'] = 0
     st.session_state['user_data'] = deepcopy(user_data_template)
     st.session_state['visited_data_fields'] = []
+    st.session_state['primed'] = False
 
 if 'gpt_messages' not in st.session_state:
     st.session_state['gpt_messages'] = []
@@ -44,8 +45,13 @@ if 'user_data' not in st.session_state:
 if 'visited_data_fields' not in st.session_state:
     st.session_state['visited_data_fields'] = []
 
-max_messages = 10
+if 'primed' not in st.session_state:
+    st.session_state['primed'] = False
 
+if 'current_field' not in st.session_state:
+    st.session_state['current_field'] = None
+
+max_messages = 10
 
 def get_next_ungathered_information():
     for key, value in st.session_state['user_data'].items():
@@ -53,56 +59,73 @@ def get_next_ungathered_information():
             return key, value
     return None
 
-def submit():
-    st.session_state.input_text = st.session_state.widget
-    st.session_state.widget = ''
-
-
-if st.session_state['message_count'] < max_messages:
-    # Cap conversation length (# of re-renders) to max_messages
-    st.session_state['message_count'] += 1
-
-    # Identify the current information we are trying to gather
+if not st.session_state.primed:
+    st.session_state.primed = True
     next_ungathered = get_next_ungathered_information()
-
-    # Exit if all data has been gathered
     if next_ungathered == None:
         st.title("All done gathering data!")
         # Print the fanal data here...
         st.stop()
 
-    # Assume we have more to gather
-    # Key will be the name of the data field we are trying to gather
-    # Information to gather will be the dictionary of information we need to gather with keys "Context" and "Response"
     user_data_key, information_to_gather = next_ungathered
+    st.session_state.current_field = user_data_key
 
-    # If we haven't visited this data field as a topic with the user yet, prime the GPT model with the relevant context
-    if user_data_key not in st.session_state.visited_data_fields:
-        # Visit the current field
-        st.session_state.visited_data_fields.append(user_data_key)
+    st.session_state.gpt_messages.append({"role": "user", "content": information_to_gather["Context"]})
+    st.session_state.message_count = 0
 
-        # Add the initial context for this topic to the messages log
-        st.session_state.gpt_messages.append({"role": "user", "content": information_to_gather["Context"]})
-    
+    completion = openai.ChatCompletion.create(
+        model="gpt-3.5-turbo",
+        messages= st.session_state.gpt_messages,
+    )
+    completion_text = completion.choices[0].message.content
+    st.session_state.gpt_messages.append({"role": "assistant", "content": completion_text})
+    st.session_state.user_facing_messages.append((completion_text, False))
+    st.session_state.message_count += 1
 
-    # Get input from the user
-    user_input = st.session_state.input_text
+
+def submit():
+    user_input = st.session_state.widget
+    # st.session_state.input_text = user_input 
+    st.session_state.widget = ''
     st.session_state.gpt_messages.append({"role": "user", "content": user_input})
     st.session_state.user_facing_messages.append((user_input, True))
 
-    # Query the GPT model for a response
     completion = openai.ChatCompletion.create(
+        model="gpt-3.5-turbo",
+        messages= st.session_state.gpt_messages,
+    )
+    completion_text = completion.choices[0].message.content
+    st.session_state.gpt_messages.append({"role": "assistant", "content": completion_text})
+    
+    st.session_state.message_count += 1
+
+    if ("####" in completion_text):
+        st.session_state['message_count'] = 0
+        answer = completion_text.strip('#')
+        st.session_state['user_data'][st.session_state.current_field]['Response'] = answer
+        
+        next_ungathered = get_next_ungathered_information()
+        if next_ungathered == None:
+            st.title("All done gathering data!")
+            # Print the fanal data here...
+            st.stop()
+
+        user_data_key, information_to_gather = next_ungathered
+        st.session_state.current_field = user_data_key
+
+        st.session_state.gpt_messages.append({"role": "user", "content": information_to_gather["Context"]})
+        st.session_state.message_count = 0
+
+        completion = openai.ChatCompletion.create(
             model="gpt-3.5-turbo",
             messages= st.session_state.gpt_messages,
         )
-    completion_text = completion.choices[0].message.content
-    if ("####" in completion_text):
-        answer = completion_text.strip('#')
-        st.session_state['user_data'][user_data_key]['Response'] = answer
+        completion_text = completion.choices[0].message.content
+        st.session_state.gpt_messages.append({"role": "assistant", "content": completion_text})
+        st.session_state.user_facing_messages.append((completion_text, False))
+        st.session_state.message_count += 1
     
     st.session_state.user_facing_messages.append((completion_text, False))
-    st.session_state.gpt_messages.append({"role": "assistant", "content": completion_text})
-
     
 
 
