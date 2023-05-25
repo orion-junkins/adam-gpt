@@ -44,13 +44,8 @@ if 'user_data' not in st.session_state:
 if 'visited_data_fields' not in st.session_state:
     st.session_state['visited_data_fields'] = []
 
-max_messages = 5
+max_messages = 10
 
-def all_information_gathered():
-    for key, value in st.session_state['user_data'].items():
-        if value['Response'] == None:
-            return False
-    return True
 
 def get_next_ungathered_information():
     for key, value in st.session_state['user_data'].items():
@@ -89,6 +84,12 @@ if st.session_state['message_count'] < max_messages:
         # Add the initial context for this topic to the messages log
         st.session_state.gpt_messages.append({"role": "user", "content": information_to_gather["Context"]})
     
+
+    # Get input from the user
+    user_input = st.session_state.input_text
+    st.session_state.gpt_messages.append({"role": "user", "content": user_input})
+    st.session_state.user_facing_messages.append((user_input, True))
+
     # Query the GPT model for a response
     completion = openai.ChatCompletion.create(
             model="gpt-3.5-turbo",
@@ -98,14 +99,11 @@ if st.session_state['message_count'] < max_messages:
     if ("####" in completion_text):
         answer = completion_text.strip('#')
         st.session_state['user_data'][user_data_key]['Response'] = answer
-    else:
-        st.session_state.user_facing_messages.append((completion_text, False))
+    
+    st.session_state.user_facing_messages.append((completion_text, False))
     st.session_state.gpt_messages.append({"role": "assistant", "content": completion_text})
 
-    # Get input from the user
-    user_input = st.session_state.input_text
-    st.session_state.gpt_messages.append({"role": "user", "content": user_input})
-    st.session_state.user_facing_messages.append((user_input, True))
+    
 
 
 for i, user_message in enumerate(st.session_state.user_facing_messages):
@@ -113,6 +111,3 @@ for i, user_message in enumerate(st.session_state.user_facing_messages):
     message(message_text, is_user=is_user, key=i)
     
 st.text_input("", "", key='widget', on_change=submit)
-
-if all_information_gathered():
-    st.write("DONE")
