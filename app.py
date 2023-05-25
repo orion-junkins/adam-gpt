@@ -20,28 +20,29 @@ st.subheader("This is a pretotype of an AI based startup advisor")
 st.markdown("[Github](https://github.com/ai-yash/st-chat)")
 
 if st.button('Reset'):
-    st.session_state['generated'] = []
-    st.session_state['messages'] = []
-    st.session_state['past'] = []
+    st.session_state['gpt_messages'] = []
+    st.session_state['user_facing_messages'] = []
     st.session_state['message_count'] = 0
     st.session_state['user_data'] = deepcopy(user_data_template)
+    st.session_state['visited_data_fields'] = []
 
-if 'generated' not in st.session_state:
-    st.session_state['generated'] = []
+if 'gpt_messages' not in st.session_state:
+    st.session_state['gpt_messages'] = []
 
-if 'messages' not in st.session_state:
-    st.session_state['messages'] = []
-
-if 'past' not in st.session_state:
-    st.session_state['past'] = []
+if 'user_facing_messages' not in st.session_state:
+    st.session_state['user_facing_messages'] = []
 
 if 'input_text' not in st.session_state:
     st.session_state['input_text'] = ''
+
 if 'message_count' not in st.session_state:
     st.session_state['message_count'] = 0
 
 if 'user_data' not in st.session_state:
     st.session_state['user_data'] = deepcopy(user_data_template)
+
+if 'visited_data_fields' not in st.session_state:
+    st.session_state['visited_data_fields'] = []
 
 max_messages = 5
 
@@ -61,38 +62,57 @@ def submit():
     st.session_state.input_text = st.session_state.widget
     st.session_state.widget = ''
 
-st.text_input("", "", key='widget', on_change=submit)
-user_input = st.session_state.input_text
 
-if user_input and st.session_state['message_count'] < max_messages and not all_information_gathered():
-    user_data_key, information_to_gather = get_next_ungathered_information()
-
-    st.session_state.messages.append({"role": "user", "content": information_to_gather["Context"]})
-
+if st.session_state['message_count'] < max_messages:
+    # Cap conversation length (# of re-renders) to max_messages
     st.session_state['message_count'] += 1
 
-    st.session_state.messages.append({"role": "user", "content": user_input})
-    st.session_state.past.append(user_input)
+    # Identify the current information we are trying to gather
+    next_ungathered = get_next_ungathered_information()
 
+    # Exit if all data has been gathered
+    if next_ungathered == None:
+        st.title("All done gathering data!")
+        # Print the fanal data here...
+        st.stop()
+
+    # Assume we have more to gather
+    # Key will be the name of the data field we are trying to gather
+    # Information to gather will be the dictionary of information we need to gather with keys "Context" and "Response"
+    user_data_key, information_to_gather = next_ungathered
+
+    # If we haven't visited this data field as a topic with the user yet, prime the GPT model with the relevant context
+    if user_data_key not in st.session_state.visited_data_fields:
+        # Visit the current field
+        st.session_state.visited_data_fields.append(user_data_key)
+
+        # Add the initial context for this topic to the messages log
+        st.session_state.gpt_messages.append({"role": "user", "content": information_to_gather["Context"]})
+    
+    # Query the GPT model for a response
     completion = openai.ChatCompletion.create(
             model="gpt-3.5-turbo",
-            messages= st.session_state.messages,
+            messages= st.session_state.gpt_messages,
         )
     completion_text = completion.choices[0].message.content
-
     if ("####" in completion_text):
         answer = completion_text.strip('#')
         st.session_state['user_data'][user_data_key]['Response'] = answer
     else:
-        st.session_state.messages.append({"role": "assistant", "content": completion_text})
-        
-        st.session_state.generated.append(completion_text)
+        st.session_state.user_facing_messages.append((completion_text, False))
+    st.session_state.gpt_messages.append({"role": "assistant", "content": completion_text})
+
+    # Get input from the user
+    user_input = st.session_state.input_text
+    st.session_state.gpt_messages.append({"role": "user", "content": user_input})
+    st.session_state.user_facing_messages.append((user_input, True))
 
 
-if st.session_state['generated']:
-    for i in range(len(st.session_state['generated'])-1, -1, -1):
-        message(st.session_state["generated"][i], key=str(i))
-        message(st.session_state['past'][i], is_user=True, key=str(i) + '_user')
+for i, user_message in enumerate(st.session_state.user_facing_messages):
+    message_text, is_user = user_message
+    message(message_text, is_user=is_user, key=i)
+    
+st.text_input("", "", key='widget', on_change=submit)
 
 if all_information_gathered():
     st.write("DONE")
