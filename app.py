@@ -122,7 +122,6 @@ def submit():
         )
         completion_text = completion.choices[0].message.content
         st.session_state.gpt_messages.append({"role": "assistant", "content": completion_text})
-        st.session_state.user_facing_messages.append((completion_text, False))
         st.session_state.message_count += 1
     
     st.session_state.user_facing_messages.append((completion_text, False))
