@@ -2,11 +2,12 @@ import openai
 import streamlit as st
 from streamlit_chat import message
 import os
+import sys
 from dotenv import load_dotenv
 from copy import deepcopy
 
-from ...user_data_template import user_data_template
-
+sys.path.append('../user_data_template')
+from user_data_template import user_data_template
 
 st.set_page_config(
     page_title="Streamlit Chat - Demo",
