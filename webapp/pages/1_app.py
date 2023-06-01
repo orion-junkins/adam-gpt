@@ -6,15 +6,10 @@ import sys
 from dotenv import load_dotenv
 from copy import deepcopy
 
-sys.path.append('../user_data_template')
+sys.path.append('../../../user_data_template')
 from user_data_template import user_data_template
 
-st.set_page_config(
-    page_title="Streamlit Chat - Demo",
-    page_icon=":robot:"
-)
 st.sidebar.header("Adam-GPT")
-
 
 load_dotenv()
 openai.api_key = os.environ['OPENAI_API_KEY']
