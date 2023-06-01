@@ -2,11 +2,9 @@ import openai
 import streamlit as st
 from streamlit_chat import message
 import os
-import sys
 from dotenv import load_dotenv
 from copy import deepcopy
 
-sys.path.append('../../../user_data_template')
 from user_data_template import user_data_template
 
 st.sidebar.header("Adam-GPT")
@@ -19,36 +17,38 @@ st.subheader("This is a pretotype of an AI based startup advisor")
 st.markdown("[Github](https://github.com/ai-yash/st-chat)")
 
 if st.button('Reset'):
-    st.session_state['generated'] = []
-    st.session_state['messages'] = []
-    st.session_state['past'] = []
+    st.session_state['gpt_messages'] = []
+    st.session_state['user_facing_messages'] = []
     st.session_state['message_count'] = 0
     st.session_state['user_data'] = deepcopy(user_data_template)
+    st.session_state['visited_data_fields'] = []
+    st.session_state['primed'] = False
 
-if 'generated' not in st.session_state:
-    st.session_state['generated'] = []
+if 'gpt_messages' not in st.session_state:
+    st.session_state['gpt_messages'] = []
 
-if 'messages' not in st.session_state:
-    st.session_state['messages'] = []
-
-if 'past' not in st.session_state:
-    st.session_state['past'] = []
+if 'user_facing_messages' not in st.session_state:
+    st.session_state['user_facing_messages'] = []
 
 if 'input_text' not in st.session_state:
     st.session_state['input_text'] = ''
+
 if 'message_count' not in st.session_state:
     st.session_state['message_count'] = 0
 
 if 'user_data' not in st.session_state:
     st.session_state['user_data'] = deepcopy(user_data_template)
 
-max_messages = 5
+if 'visited_data_fields' not in st.session_state:
+    st.session_state['visited_data_fields'] = []
 
-def all_information_gathered():
-    for key, value in st.session_state['user_data'].items():
-        if value['Response'] == None:
-            return False
-    return True
+if 'primed' not in st.session_state:
+    st.session_state['primed'] = False
+
+if 'current_field' not in st.session_state:
+    st.session_state['current_field'] = None
+
+max_messages = 10
 
 def get_next_ungathered_information():
     for key, value in st.session_state['user_data'].items():
@@ -56,42 +56,76 @@ def get_next_ungathered_information():
             return key, value
     return None
 
-def submit():
-    st.session_state.input_text = st.session_state.widget
-    st.session_state.widget = ''
+if not st.session_state.primed:
+    st.session_state.primed = True
+    next_ungathered = get_next_ungathered_information()
+    if next_ungathered == None:
+        st.title("All done gathering data!")
+        # Print the fanal data here...
+        st.stop()
 
-st.text_input("", "", key='widget', on_change=submit)
-user_input = st.session_state.input_text
+    user_data_key, information_to_gather = next_ungathered
+    st.session_state.current_field = user_data_key
 
-if user_input and st.session_state['message_count'] < max_messages and not all_information_gathered():
-    user_data_key, information_to_gather = get_next_ungathered_information()
-
-    st.session_state.messages.append({"role": "user", "content": information_to_gather["Context"]})
-
-    st.session_state['message_count'] += 1
-
-    st.session_state.messages.append({"role": "user", "content": user_input})
-    st.session_state.past.append(user_input)
+    st.session_state.gpt_messages.append({"role": "user", "content": information_to_gather["Context"]})
+    st.session_state.message_count = 0
 
     completion = openai.ChatCompletion.create(
-            model="gpt-3.5-turbo",
-            messages= st.session_state.messages,
-        )
+        model="gpt-3.5-turbo",
+        messages= st.session_state.gpt_messages,
+    )
     completion_text = completion.choices[0].message.content
+    st.session_state.gpt_messages.append({"role": "assistant", "content": completion_text})
+    st.session_state.user_facing_messages.append((completion_text, False))
+    st.session_state.message_count += 1
+
+
+def submit():
+    user_input = st.session_state.widget
+    # st.session_state.input_text = user_input 
+    st.session_state.widget = ''
+    st.session_state.gpt_messages.append({"role": "user", "content": user_input})
+    st.session_state.user_facing_messages.append((user_input, True))
+
+    completion = openai.ChatCompletion.create(
+        model="gpt-3.5-turbo",
+        messages= st.session_state.gpt_messages,
+    )
+    completion_text = completion.choices[0].message.content
+    st.session_state.gpt_messages.append({"role": "assistant", "content": completion_text})
+    
+    st.session_state.message_count += 1
 
     if ("####" in completion_text):
+        st.session_state['message_count'] = 0
         answer = completion_text.strip('#')
-        st.session_state['user_data'][user_data_key]['Response'] = answer
-    else:
-        st.session_state.messages.append({"role": "assistant", "content": completion_text})
+        st.session_state['user_data'][st.session_state.current_field]['Response'] = answer
         
-        st.session_state.generated.append(completion_text)
+        next_ungathered = get_next_ungathered_information()
+        if next_ungathered == None:
+            st.title("All done gathering data!")
+            # Print the final data here...
+            st.stop()
+
+        user_data_key, information_to_gather = next_ungathered
+        st.session_state.current_field = user_data_key
+
+        st.session_state.gpt_messages.append({"role": "user", "content": information_to_gather["Context"]})
+        st.session_state.message_count = 0
+
+        completion = openai.ChatCompletion.create(
+            model="gpt-3.5-turbo",
+            messages= st.session_state.gpt_messages,
+        )
+        completion_text = completion.choices[0].message.content
+        st.session_state.gpt_messages.append({"role": "assistant", "content": completion_text})
+        st.session_state.message_count += 1
+    
+    st.session_state.user_facing_messages.append((completion_text, False))
 
 
-if st.session_state['generated']:
-    for i in range(len(st.session_state['generated'])-1, -1, -1):
-        message(st.session_state["generated"][i], key=str(i))
-        message(st.session_state['past'][i], is_user=True, key=str(i) + '_user')
-
-if all_information_gathered():
-    st.write("DONE")
+for i, user_message in enumerate(st.session_state.user_facing_messages):
+    message_text, is_user = user_message
+    message(message_text, is_user=is_user, key=i)
+    
+st.text_input("", "", key='widget', on_change=submit)
