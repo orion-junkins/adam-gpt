@@ -2,6 +2,7 @@ import openai
 import streamlit as st
 from streamlit_chat import message
 import os
+import json
 from dotenv import load_dotenv
 from copy import deepcopy
 
@@ -12,8 +13,12 @@ st.sidebar.header("Adam-GPT")
 load_dotenv()
 openai.api_key = os.environ['OPENAI_API_KEY']
 
-st.header("Streamlit Chat - Demo")
-st.subheader("This is a pretotype of an AI based startup advisor")
+st.header("Adam GPT - Demo")
+st.subheader("Your friendly neighborhood startup advising AI")
+st.write("Adam's job is to gather the basic facts about your business. Once he has gathered all the information needed, he will forward your case human lawyers to review your case and they will be in touch with you shortly with next steps.")
+st.write("Adam is going to try to find out the name of your business, the tagline, and the best structure. If you don't know these things, that's okay! Adam will help you figure it out.")
+st.write("Join the chat below to get started...")
+
 st.markdown("[Github](https://github.com/ai-yash/st-chat)")
 
 if st.button('Reset'):
@@ -24,11 +29,16 @@ if st.button('Reset'):
     st.session_state['visited_data_fields'] = []
     st.session_state['primed'] = False
 
+    seed_message = "Hello! I'm Adam :) Let's get started."
+    st.session_state.user_facing_messages.append((seed_message, False))
+
 if 'gpt_messages' not in st.session_state:
     st.session_state['gpt_messages'] = []
 
 if 'user_facing_messages' not in st.session_state:
     st.session_state['user_facing_messages'] = []
+    seed_message = "Hello! I'm Adam :) Let's get started."
+    st.session_state.user_facing_messages.append((seed_message, False))
 
 if 'input_text' not in st.session_state:
     st.session_state['input_text'] = ''
@@ -61,7 +71,9 @@ if not st.session_state.primed:
     next_ungathered = get_next_ungathered_information()
     if next_ungathered == None:
         st.title("All done gathering data!")
-        # Print the fanal data here...
+        st.write("The AI agent has gathered all of the information it needs. Your case has been forwarded to our team of human lawyers. They will be in touch with you shortly with next steps!")
+        with open("output.json", "w") as json_file:
+            json.dump(st.session_state['user_data'], json_file)
         st.stop()
 
     user_data_key, information_to_gather = next_ungathered
@@ -82,7 +94,6 @@ if not st.session_state.primed:
 
 def submit():
     user_input = st.session_state.widget
-    # st.session_state.input_text = user_input 
     st.session_state.widget = ''
     st.session_state.gpt_messages.append({"role": "user", "content": user_input})
     st.session_state.user_facing_messages.append((user_input, True))
@@ -104,7 +115,9 @@ def submit():
         next_ungathered = get_next_ungathered_information()
         if next_ungathered == None:
             st.title("All done gathering data!")
-            # Print the final data here...
+            st.write("The AI agent has gathered all of the information it needs. Your case has been forwarded to our team of human lawyers. They will be in touch with you shortly with next steps!")
+            with open("output.json", "w") as json_file:
+                json.dump(st.session_state['user_data'], json_file)
             st.stop()
 
         user_data_key, information_to_gather = next_ungathered
