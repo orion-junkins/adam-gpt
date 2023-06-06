@@ -1,3 +1,4 @@
+import re
 import openai
 import streamlit as st
 from streamlit_chat import message
@@ -109,7 +110,15 @@ def submit():
 
     if ("####" in completion_text):
         st.session_state['message_count'] = 0
-        answer = completion_text.strip('#')
+
+        pattern = r'####(.*?)####'  # Regular expression pattern to match text between ####
+        matches = re.findall(pattern, completion_text)  # Find all matches of the pattern in the text
+        
+        if matches:
+            answer = matches[0]  # Return the first match found
+        else:
+            answer = completion_text.strip('#')
+
         st.session_state['user_data'][st.session_state.current_field]['Response'] = answer
         
         next_ungathered = get_next_ungathered_information()
