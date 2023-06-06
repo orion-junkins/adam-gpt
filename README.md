@@ -19,7 +19,7 @@ To use AdamGPT, follow these simple steps:
 2. Ensure you have the necessary dependencies installed.
     i. Python 3.6 or higher and Streamlit
 3. Launch the chatbot by running the following command in your terminal:
-    `streamlit run adam-gpt-streamlit.py`
+    `streamlit run webapp/About.py`
 4. Access the chatbot through the local host link provided in your terminal.
 5. Start chatting with AdamGPT by entering your queries or messages to help you start your business!
 6. AdamGPT will respond with relevant information, guidance, and resources to help you with your business start-up journey. 
