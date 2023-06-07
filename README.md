@@ -15,25 +15,28 @@ AdamGPT is a chatbot designed to assist users in gathering the necessary documen
 
 To use AdamGPT, follow these simple steps:
 
-1. Clone the repository or download the zip file to your local machine. 
-2. Ensure you have the necessary dependencies installed.
-    a. Python 3.6 or higher
-    b. Streamlit and streamlit_chat
-    c. Python load_dotenv
-    d. OpenAI API key
-3. Create a `.env` file that reads: `OPENAI_API_KEY = ` followed by your OpenAI API key.
-4. Launch the chatbot by running the following command in your terminal:
-    `streamlit run webapp/About.py`
-5. Access the chatbot through the local host link provided in your terminal.
-6. Start chatting with AdamGPT by entering your queries or messages to help you start your business!
-7. AdamGPT will respond with relevant information, guidance, and resources to help you with your business start-up journey. 
+<ul>
+   <li>1. Clone the repository or download the zip file to your local machine.
+   <li>2. Ensure you have the necessary dependencies installed.
+      <ul>
+         <li>a. Python 3.6 or higher
+         <li>b. Streamlit and streamlit_chat
+         <li>c. Python load_dotenv
+         <li>d. OpenAI API key
+      </ul>
+   <li>3. Create a `.env` file that reads: `OPENAI_API_KEY = ` followed by your OpenAI API key.
+   <li>4. Launch the chatbot by running the following command in your terminal: `streamlit run webapp/About.py`
+   <li>5. Access the chatbot through the local host link provided in your terminal.
+   <li>6. Start chatting with AdamGPT by entering your queries or messages to help you start your business!
+   <li>7. AdamGPT will respond with relevant information, guidance, and resources to help you with your business start-up journey.
+</ul>
 
 ## Features
 
 AdamGPT offers the following features and functionalities:
 
-- Guided assistance in gathering the necessary documents for starting a business.
-- Recommendations on legal requirements, registration processes, and licensing.
+- Guided assistance in gathering the necessary components for starting a business.
+- Education on legal requirements, registration processes, and licensing.
 - Information on business planning, marketing strategies, and financial considerations.
 - Access to a curated knowledge base of resources, articles, and FAQs related to business start-ups.
 - Error handling and suggestions for alternative queries.
@@ -54,12 +57,24 @@ Once the AdamGPT chatbot is set up and running, you can begin a conversation by 
 
 Here are a few examples of how you can interact with AdamGPT:
 
-1. User: What legal documents do I need to start a business?
-   AdamGPT: To start a business, you typically need documents such as a business license, permits, employer identification number (EIN), and possibly certificates specific to your industry. Would you like more information about any of these documents?
-2. User: How can I register my business name?
-   AdamGPT: Registering a business name typically involves checking for availability, completing a registration form, and submitting it to the appropriate agency. Would you like guidance on how to register your business name in your specific location?
-3. User: What are some effective marketing strategies for a small business?
-   AdamGPT: There are various marketing stratgies you can consider for your small business, including social media marketing, content marketing, email marketing, and search engine optimization (SEO). Would you like more details on any of these strategies or recommendations tailored to your business type? 
+<ul>
+   <li>Choose a business name 
+      <ul>
+         <li>**User**: Can you give me suggestions for a business name? 
+         <li>**AdamGPT**: Sure, what type of business is it? What products or services will you offer? Let's brainstorm some ideas together.
+      </ul>
+   <li>Create a business tagline 
+      <ul>
+         <li>**User**: What are some ideas for a tagline for my business? 
+         <li>**AdamGPT**: Some ideas for a tagline could be: `[LIST OF IDEAS]`. Do any of these ideas resonate with you?
+      </ul>
+   <li>Learn about business structure
+      <ul>
+         <li>**AdamGPT**: What kind of business are you interested in start? Please feel free to share details about the product or service you want to offer, as well as your goals and vision for the business. This will help me determine the best business structure for your needs.
+         <li>**User**: I want to start a `[BUSINESS IDEA]`. I want to offer `[PRODUCT/SERVICE]` to `[TARGET AUDIENCE]`. My goal is to `[GOAL]`. My vision is to `[VISION]`.
+         <li>**AdamGPT**: Based on the information you provided, it sounds like a `[BUSINESS STRUCTURE]` would be the best option for you. This business structure will allow you to `[BENEFITS]`. Are you interested in pursuing this option for your business? 
+      </ul>
+</ul>
 
 ## Feedback
 
