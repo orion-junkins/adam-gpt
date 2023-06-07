@@ -15,14 +15,18 @@ AdamGPT is a chatbot designed to assist users in gathering the necessary documen
 
 To use AdamGPT, follow these simple steps:
 
-1. Clone the repository or down the zip file to your local machine. 
+1. Clone the repository or download the zip file to your local machine. 
 2. Ensure you have the necessary dependencies installed.
-    i. Python 3.6 or higher and Streamlit
-3. Launch the chatbot by running the following command in your terminal:
+    a. Python 3.6 or higher
+    b. Streamlit and streamlit_chat
+    c. Python load_dotenv
+    d. OpenAI API key
+3. Create a `.env` file that reads: `OPENAI_API_KEY = ` followed by your OpenAI API key.
+4. Launch the chatbot by running the following command in your terminal:
     `streamlit run webapp/About.py`
-4. Access the chatbot through the local host link provided in your terminal.
-5. Start chatting with AdamGPT by entering your queries or messages to help you start your business!
-6. AdamGPT will respond with relevant information, guidance, and resources to help you with your business start-up journey. 
+5. Access the chatbot through the local host link provided in your terminal.
+6. Start chatting with AdamGPT by entering your queries or messages to help you start your business!
+7. AdamGPT will respond with relevant information, guidance, and resources to help you with your business start-up journey. 
 
 ## Features
 
@@ -41,7 +45,7 @@ Once the AdamGPT chatbot is set up and running, you can begin a conversation by 
 
 1. Access the chatbot through your web browser by visiting the designated URL.
 2. You will be greeted with a welcome message and a chat interface.
-3. Type your question or query in teh provided input field and hit "Enter" or click the "Send" button.
+3. Type your question or query in the provided input field and hit "Enter" or click the "Send" button.
 4. AdamGPT will analyze your input and generate a response based on the available knowledge base.
 5. Review the response provided by AdamGPT and continue the conversation by asking follow-up questions or seeking more information.
 6. Repeat the process until you have gathered the necessary documents and information for your business start-up.
@@ -66,11 +70,11 @@ We welcome your feedback to help us improve AdamGPT and enhance the user experie
 We appreciate contributions from the community to make AdamGPT even better. If you'd like to contribute to the development of AdamGPT, please follow these guidelines: 
 
 1. Fork the repository.
-2. Create a new branch for your your feature or bug fix.
+2. Create a new branch for your feature or bug fix.
 3. Make your changes and ensure they are well-documented and tested.
 4. Commit your changes and push them to your fork repository.
 5. Submit a pull request, describing the changes you have made and their purpose.
-6. ENsure that your code adheres to the project's coding standards and best practices.
+6. Ensure that your code adheres to the project's coding standards and best practices.
 7. Participate in the review process and address any feedback or comments provided by the maintainers.
 8. Once your pull request is approved, it will be merged into the main repository.
 
