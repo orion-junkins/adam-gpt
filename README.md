@@ -1,4 +1,4 @@
-#  AdamGPT - Business Start-up Chatbot
+#  AdamGPT ‍🚀 - Business Start-up Chatbot
 
 AdamGPT is a chatbot designed to assist users in gathering the necessary documents and information required to start their own business. By engaging in a conversation with AdamGPT, users can receive guidance, recommendations, and valuable resources related to business start-up processes. This README file provides an overview of AdamGPT and instructions on how to interact with the chatbot effectively.
 
@@ -15,14 +15,17 @@ AdamGPT is a chatbot designed to assist users in gathering the necessary documen
 
 To use AdamGPT, follow these simple steps:
 
-1. Clone the repository or down the zip file to your local machine. 
+1. Clone the repository or download the zip file to your local machine. 
 2. Ensure you have the necessary dependencies installed.
-    i. Python 3.6 or higher and Streamlit
-3. Launch the chatbot by running the following command in your terminal:
-    `streamlit run adam-gpt-streamlit.py`
-4. Create a `.env` file and inside, put `OPENAI_API_KEY = ` followed by your openai API key.
+    a. Python 3.6 or higher
+    b. Streamlit and streamlit_chat
+    c. Python load_dotenv
+    d. OpenAI API key
+3. Create a `.env` file that reads: `OPENAI_API_KEY = ` followed by your OpenAI API key.
+4. Launch the chatbot by running the following command in your terminal:
+    `streamlit run webapp/About.py`
 5. Access the chatbot through the local host link provided in your terminal.
-6. Start chatting with AdamGPT by entering your responses and or question to AdamGPT's prompts to help you start your business!
+6. Start chatting with AdamGPT by entering your queries or messages to help you start your business!
 7. AdamGPT will respond with relevant information, guidance, and resources to help you with your business start-up journey. 
 
 ## Features
@@ -30,7 +33,8 @@ To use AdamGPT, follow these simple steps:
 AdamGPT offers the following features and functionalities:
 
 - Guided assistance in gathering the necessary documents for starting a business.
-- Information on legal requirements, registration processes, business planning and licensing.
+- Recommendations on legal requirements, registration processes, and licensing.
+- Information on business planning, marketing strategies, and financial considerations.
 - Access to a curated knowledge base of resources, articles, and FAQs related to business start-ups.
 - Error handling and suggestions for alternative queries.
 - User-friendly interface for seamless interaction. 
@@ -66,7 +70,7 @@ We welcome your feedback to help us improve AdamGPT and enhance the user experie
 We appreciate contributions from the community to make AdamGPT even better. If you'd like to contribute to the development of AdamGPT, please follow these guidelines: 
 
 1. Fork the repository.
-2. Create a new branch for your your feature or bug fix.
+2. Create a new branch for your feature or bug fix.
 3. Make your changes and ensure they are well-documented and tested.
 4. Commit your changes and push them to your fork repository.
 5. Submit a pull request, describing the changes you have made and their purpose.
@@ -74,9 +78,8 @@ We appreciate contributions from the community to make AdamGPT even better. If y
 7. Participate in the review process and address any feedback or comments provided by the maintainers.
 8. Once your pull request is approved, it will be merged into the main repository.
 
-Please note that by contributing to AdamGPT, you agree that your contributions will be licensed under the project's license (See License section).
+Please note that by contributing to AdamGPT, you agree that your contributions will be licensed under the project's license (mentioned in the next section).
 
-## Future Option
 ## License
 
 AdamGPT is released under the [MIT License](https://opensource.org/license/mit/). You are free to use, modify, and distribute this software for personal or commercial purposes. However, please review the license file for more details and ensure compliance with the license terms. 
